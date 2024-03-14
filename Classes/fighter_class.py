@@ -1,9 +1,28 @@
 import pygame
 import random
+from pygame import mixer
+
+pygame.init()
+mixer.init()
+
+# defaults
+player_size = 162
+player_scale = 4
+player_offset = [72, 53]
+screen = pygame.display.set_mode((10, 50))
+player_info = [player_size, player_scale, player_offset]
+player_sheet = pygame.image.load("../assets/images/Sprites/player/player.png").convert_alpha()
+player_animation_steps = [10, 8, 1, 7, 7, 3, 7]
+player_attack_sound = pygame.mixer.Sound("../assets/audio/sword.wav")
 
 
 class Fighter:
-    def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps, sound):
+    def __init__(self, player, x, y, flip, data=None, sprite_sheet=player_sheet, animation_steps=None,
+                 sound=player_attack_sound):
+        if animation_steps is None:
+            animation_steps = player_animation_steps
+        if data is None:
+            data = player_info
         self.player = player
         self.size = data[0]
         self.image_scale = data[1]
@@ -39,6 +58,7 @@ class Fighter:
         return animation_list
 
     def move(self, target, round_over):
+
         SPEED = 10
         GRAVITY = 2
         dx = 0
@@ -46,7 +66,7 @@ class Fighter:
         self.running = False
         self.attack_type = 0
 
-        # get keypresses
+        # get keypress
         key = pygame.key.get_pressed()
 
         # can only perform other actions if not currently attacking
@@ -61,8 +81,8 @@ class Fighter:
                     dx = SPEED
                     self.running = True
                 # jump
-                if key[pygame.K_SPACE] and self.jump == False:
-                    self.vel_y = -30
+                if key[pygame.K_SPACE] and not self.jump:
+                    self.vel_y = -35
                     self.jump = True
                 # attack
                 if key[pygame.K_q] or key[pygame.K_e]:
@@ -161,7 +181,7 @@ class Fighter:
         else:
             self.update_action(0)  # 0:idle
 
-        animation_cooldown = 50
+        animation_cooldown = 30
         # update image
         self.image = self.animation_list[self.action][self.frame_index]
         # check if enough time has passed since the last update

@@ -1,6 +1,6 @@
 import socket
 from _thread import *
-from Classes.fighter_class import Fighter
+from Classes.fighter_class import MultiplayerFighter
 import pickle
 
 # variables
@@ -19,8 +19,8 @@ except socket.error as e:
 s.listen(2)
 print("Waiting for a connection, Server Started")
 
-players = [Fighter(1, 200, 450, False),
-           Fighter(2, 1000, 450, True)]
+players = [MultiplayerFighter(1, 200, 450, False),
+           MultiplayerFighter(2, 1000, 450, True)]
 
 
 def threaded_client(conn, player):

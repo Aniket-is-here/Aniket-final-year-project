@@ -4,18 +4,18 @@ from pygame import mixer
 from Classes.button import Button
 from Classes.fighter_class import Fighter
 from Classes.gameStateManager import GameStateManager
-
-from network import Network
-from Classes.fighter_class import MultiplayerFighter
+from Classes.network import Network
 
 mixer.init()
 pygame.init()
+
 # variables
+
 clock = pygame.time.Clock()
 FPS = 40
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))  # default screen size
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)  # default screen size
 
 # character info
 player_size = 162
@@ -29,16 +29,16 @@ enemy_offset = [110, 105]
 enemy_info = [enemy_size, enemy_scale, enemy_offset]
 
 # spreadsheets
-player_sheet = pygame.image.load("../assets/images/Sprites/player/player.png").convert_alpha()
+player_sheet = pygame.image.load("assets/images/Sprites/player/player.png").convert_alpha()
 player_animation_steps = [10, 8, 1, 7, 7, 3, 7]
 
-enemy_sheet = pygame.image.load("../assets/images/Sprites/enemy/enemy.png").convert_alpha()
+enemy_sheet = pygame.image.load("assets/images/Sprites/enemy/enemy.png").convert_alpha()
 enemy_animation_steps = [8, 8, 1, 8, 8, 3, 7]
 
 # images
-menu_bg = pygame.image.load("../assets/images/background/menu_bg.png").convert_alpha()
-arena_bg = pygame.image.load("../assets/images/background/arena_bg.png").convert_alpha()
-victory_image = pygame.image.load("../assets/images/icons/victory.png").convert_alpha()
+menu_bg = pygame.image.load("assets/images/background/menu_bg.png").convert_alpha()
+arena_bg = pygame.image.load("assets/images/background/arena_bg.png").convert_alpha()
+victory_image = pygame.image.load("assets/images/icons/victory.png").convert_alpha()
 
 # colors
 YELLOW = (255, 255, 0)
@@ -46,16 +46,16 @@ RED = (255, 0, 0)
 WHITE = (255, 255, 255)
 
 # FONTS
-default_font = pygame.font.Font("../assets/font/font.ttf", 25)
-medium_font = pygame.font.Font("../assets/font/font.ttf", 40)
-large_font = pygame.font.Font("../assets/font/font.ttf", 60)
+default_font = pygame.font.Font("assets/font/font.ttf", 25)
+medium_font = pygame.font.Font("assets/font/font.ttf", 40)
+large_font = pygame.font.Font("assets/font/font.ttf", 60)
 
 # music
-pygame.mixer.music.load("../assets/audio/Arena Sound.mpeg")
+pygame.mixer.music.load("assets/audio/Arena Sound.mpeg")
 # playing music
 pygame.mixer.music.play(-1, 13.0, 5000)
-player_attack_sound = pygame.mixer.Sound("../assets/audio/sword.wav")
-enemy_attack_sound = pygame.mixer.Sound("../assets/audio/magic.wav")
+player_attack_sound = pygame.mixer.Sound("assets/audio/sword.wav")
+enemy_attack_sound = pygame.mixer.Sound("assets/audio/magic.wav")
 
 
 class GameHandler:
@@ -77,7 +77,7 @@ class GameHandler:
 
 class Game:
     def __init__(self, ):
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT),pygame.RESIZABLE)
         self.isLoggedIn = False
         self.gameStateManager = GameStateManager('menu')
         self.menu = Menu(Screen=self.screen, gameStateManager=self.gameStateManager)
@@ -115,6 +115,8 @@ class Menu:
         self.screen = Screen
         self.gameStateManager = gameStateManager
         self.gamehandler = GameHandler()
+        self.MENU_TEXT = medium_font.render("Samurai's Adventure", True, "#b68f40")
+        self.MENU_RECT = self.MENU_TEXT.get_rect(center=(640, 150))
 
     def run(self):
         pygame.display.set_caption("Menu")
@@ -122,22 +124,19 @@ class Menu:
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        MENU_TEXT = medium_font.render("Samurai's Adventure", True, "#b68f40")
-        MENU_RECT = MENU_TEXT.get_rect(center=(640, 150))
-
-        singlePlayer_option = Button(image=pygame.image.load("../assets/images/icons/Play Rect.png"), pos=(1040, 250),
+        singlePlayer_option = Button(image=pygame.image.load("assets/images/icons/Play Rect.png"), pos=(1040, 250),
                                      text_input="Single Player", font=default_font, base_color="#d7fcd4",
                                      hovering_color="White")
-        multiPlayer_option = Button(image=pygame.image.load("../assets/images/icons/Play Rect.png"), pos=(1040, 300),
+        multiPlayer_option = Button(image=pygame.image.load("assets/images/icons/Play Rect.png"), pos=(1040, 300),
                                     text_input="Multi Player", font=default_font, base_color="#d7fcd4",
                                     hovering_color="White")
-        control_option = Button(image=pygame.image.load("../assets/images/icons/Play Rect.png"), pos=(1040, 350),
+        control_option = Button(image=pygame.image.load("assets/images/icons/Play Rect.png"), pos=(1040, 350),
                                 text_input="Controls", font=default_font, base_color="#d7fcd4",
                                 hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("../assets/images/icons/Quit Rect.png"), pos=(1200, 40),
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/images/icons/Quit Rect.png"), pos=(1200, 40),
                              text_input="QUIT", font=default_font, base_color="#d7fcd4", hovering_color="White")
 
-        self.screen.blit(MENU_TEXT, MENU_RECT)
+        self.screen.blit(self.MENU_TEXT, self.MENU_RECT)
 
         for button in [singlePlayer_option, multiPlayer_option, control_option, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
@@ -216,7 +215,7 @@ class SinglePlayer:
 
             # displaying quit button
 
-            BACK_BUTTON = Button(image=pygame.image.load("../assets/images/icons/Play Rect.png"), pos=(1200, 20),
+            BACK_BUTTON = Button(image=pygame.image.load("assets/images/icons/Play Rect.png"), pos=(1200, 20),
                                  text_input="BACK", font=default_font, base_color="#d7fcd4", hovering_color="White")
 
             if not round_over:
@@ -321,7 +320,7 @@ class LocalMultiplayer:
             player2.draw(screen)
 
             # displaying quit button
-            BACK_BUTTON = Button(image=pygame.image.load("../assets/images/icons/Play Rect.png"), pos=(1200, 20),
+            BACK_BUTTON = Button(image=pygame.image.load("assets/images/icons/Play Rect.png"), pos=(1200, 20),
                                  text_input="BACK", font=default_font, base_color="#d7fcd4", hovering_color="White")
 
             if not round_over:
@@ -376,14 +375,14 @@ class Multiplayer:
         MENU_TEXT = medium_font.render("Multiplayer", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(640, 150))
 
-        localMultiplayerButton = Button(image=pygame.image.load("../assets/images/icons/Play Rect.png"),
+        localMultiplayerButton = Button(image=pygame.image.load("assets/images/icons/Play Rect.png"),
                                         pos=(1040, 250),
                                         text_input="Local", font=default_font, base_color="#d7fcd4",
                                         hovering_color="White")
-        lanMultiPlayerButton = Button(image=pygame.image.load("../assets/images/icons/Play Rect.png"), pos=(1040, 300),
+        lanMultiPlayerButton = Button(image=pygame.image.load("assets/images/icons/Play Rect.png"), pos=(1040, 300),
                                       text_input="Via Lan", font=default_font, base_color="#d7fcd4",
                                       hovering_color="White")
-        backButton = Button(image=pygame.image.load("../assets/images/icons/Play Rect.png"), pos=(1040, 350),
+        backButton = Button(image=pygame.image.load("assets/images/icons/Play Rect.png"), pos=(1040, 350),
                             text_input="Back", font=default_font, base_color="#d7fcd4",
                             hovering_color="White")
 
@@ -433,7 +432,7 @@ class Controls:
         screen.blit(attack1_control2, (740, 120))
         attack2_control2 = default_font.render("Attack2 = 2", True, "black")
         screen.blit(attack2_control2, (740, 160))
-        BACK_BUTTON = Button(image=pygame.image.load("../assets/images/icons/Play Rect.png"), pos=(1200, 20),
+        BACK_BUTTON = Button(image=pygame.image.load("assets/images/icons/Play Rect.png"), pos=(1200, 20),
                              text_input="BACK", font=default_font, base_color="#d7fcd4", hovering_color="White")
         for button in [BACK_BUTTON]:
             button.changeColor(PLAY_MOUSE_POS)
@@ -454,7 +453,9 @@ class LanMultiplayer:
         self.gameStateManager = gameStateManager
         self.gamehandler = GameHandler()
 
+
     def run(self):
+
         round_over_time = self.gamehandler.round_over_time
         intro_count = self.gamehandler.intro_count
 
@@ -521,7 +522,7 @@ class LanMultiplayer:
             player2.draw(screen, image=player2image)
 
             # displaying quit button
-            BACK_BUTTON = Button(image=pygame.image.load("../assets/images/icons/Play Rect.png"), pos=(1200, 20),
+            BACK_BUTTON = Button(image=pygame.image.load("assets/images/icons/Play Rect.png"), pos=(1200, 20),
                                  text_input="BACK", font=default_font, base_color="#d7fcd4", hovering_color="White")
 
             if not round_over:

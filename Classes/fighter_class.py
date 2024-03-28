@@ -1,5 +1,4 @@
-import pygame
-import random
+import pygame, random
 from pygame import mixer
 
 pygame.init()
@@ -11,9 +10,15 @@ player_scale = 4
 player_offset = [72, 53]
 screen = pygame.display.set_mode((10, 50))
 player_info = [player_size, player_scale, player_offset]
-player_sheet = pygame.image.load("../assets/images/Sprites/player/player.png").convert_alpha()
+
+try:
+    player_sheet = pygame.image.load("assets/images/Sprites/player/player.png").convert_alpha()
+    player_attack_sound = pygame.mixer.Sound("assets/audio/sword.wav")
+except FileNotFoundError:
+    player_sheet = pygame.image.load("../assets/images/Sprites/player/player.png").convert_alpha()
+    player_attack_sound = pygame.mixer.Sound("../assets/audio/sword.wav")
+
 player_animation_steps = [10, 8, 1, 7, 7, 3, 7]
-player_attack_sound = pygame.mixer.Sound("../assets/audio/sword.wav")
 
 
 class MultiplayerFighter:
